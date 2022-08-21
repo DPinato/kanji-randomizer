@@ -35,12 +35,14 @@ func FetchKanjiList(jlptLevel, destFile string) error {
 			return err
 		}
 		page := string(body)
-		log.Printf("Success, read %d bytes\n", len(page))
+		log.Printf("Success, read %d bytes", len(page))
 
 		tmpList, err := ProcessPage(page)
 		if err != nil {
 			return err
 		}
+		log.Printf(" - got %d more kanji", len(tmpList))
+		log.Printf("\n")
 		kanjiList = append(kanjiList, tmpList...)
 
 		// check if there is a next page
@@ -111,18 +113,25 @@ func ProcessKanjiSection(sectionStr string) (KanjiCharacter, error) {
 	tmpSection = sectionStr[strings.Index(sectionStr, "literal_block"):]
 	kanji.KanjiJishoLink = "https:" + helper.GetHTMLFieldKeyValue(tmpSection, "a href")
 	kanji.Kanji = helper.GetHTMLFieldValue(tmpSection[strings.Index(tmpSection, "a href"):])
+	fmt.Println(kanji.Kanji)
 
 	tmpSection = sectionStr[strings.Index(sectionStr, "meanings english sense"):]
 	tmpSection = tmpSection[:strings.Index(tmpSection, "</div>")]
 	kanji.Meanings = GetKanjiEnglishMeanings(tmpSection)
 
-	tmpSection = sectionStr[strings.Index(sectionStr, "kun readings"):]
-	tmpSection = tmpSection[:strings.Index(tmpSection, "</div>")]
-	kanji.Kunyomi = GetKanjiReadings(tmpSection)
+	kunReadingsIndex := strings.Index(sectionStr, "kun readings")
+	if kunReadingsIndex != -1 {
+		tmpSection = sectionStr[kunReadingsIndex:]
+		tmpSection = tmpSection[:strings.Index(tmpSection, "</div>")]
+		kanji.Kunyomi = GetKanjiReadings(tmpSection)
+	}
 
-	tmpSection = sectionStr[strings.Index(sectionStr, "on readings"):]
-	tmpSection = tmpSection[:strings.Index(tmpSection, "</div>")]
-	kanji.Onyomi = GetKanjiReadings(tmpSection)
+	onReadingsIndex := strings.Index(sectionStr, "on readings")
+	if onReadingsIndex != -1 {
+		tmpSection = sectionStr[onReadingsIndex:]
+		tmpSection = tmpSection[:strings.Index(tmpSection, "</div>")]
+		kanji.Onyomi = GetKanjiReadings(tmpSection)
+	}
 
 	return kanji, nil
 }
