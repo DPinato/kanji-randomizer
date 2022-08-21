@@ -35,14 +35,13 @@ func FetchKanjiList(jlptLevel, destFile string) error {
 			return err
 		}
 		page := string(body)
-		log.Printf("Success, read %d bytes", len(page))
+		log.Printf("Success, read %d bytes\n", len(page))
 
 		tmpList, err := ProcessPage(page)
 		if err != nil {
 			return err
 		}
-		log.Printf(" - got %d more kanji", len(tmpList))
-		log.Printf("\n")
+		log.Printf("Got %d more kanji\n", len(tmpList))
 		kanjiList = append(kanjiList, tmpList...)
 
 		// check if there is a next page
@@ -113,7 +112,6 @@ func ProcessKanjiSection(sectionStr string) (KanjiCharacter, error) {
 	tmpSection = sectionStr[strings.Index(sectionStr, "literal_block"):]
 	kanji.KanjiJishoLink = "https:" + helper.GetHTMLFieldKeyValue(tmpSection, "a href")
 	kanji.Kanji = helper.GetHTMLFieldValue(tmpSection[strings.Index(tmpSection, "a href"):])
-	fmt.Println(kanji.Kanji)
 
 	tmpSection = sectionStr[strings.Index(sectionStr, "meanings english sense"):]
 	tmpSection = tmpSection[:strings.Index(tmpSection, "</div>")]
