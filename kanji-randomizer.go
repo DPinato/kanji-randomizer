@@ -94,7 +94,9 @@ func main() {
 
 	// give a nice useful output
 	for _, elem := range randKanjiList {
-		log.Printf("%s (%s) - %s\n", elem.Kanji, elem.JLPT, elem.KanjiJishoLink)
+		// log.Printf("%s (%s) - %s\n", elem.Kanji, elem.JLPT, elem.KanjiJishoLink)
+		fmt.Printf("=HYPERLINK(\"%s\", \"%s\")\n", elem.KanjiJishoLink, elem.Kanji)
+
 	}
 
 }
