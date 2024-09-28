@@ -10,6 +10,11 @@ if [ ! -d $TJ_DIR ]; then
   sudo mkdir -p $TJ_DIR;
 fi
 
+TJ_USER_DIR="/usr/local/kanji-randomizer"
+if [ ! -d $TJ_USER_DIR ]; then
+  sudo mkdir -p $TJ_USER_DIR;
+fi
+
 sudo chown pi $TJ_DIR
 cp -t $TJ_DIR/ kanji-randomizer
 rm kanji-randomizer
